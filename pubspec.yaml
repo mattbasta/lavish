@@ -1,0 +1,6 @@
+name: lavish
+version: 0.0.1
+author: Matt Basta <mattbasta@gmail.com>
+description: Browser-based shell
+dependencies:
+    mime: ">=0.9.0+3 <0.10.0"
