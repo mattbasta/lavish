@@ -87,22 +87,32 @@ define('builder', ['cmdlib'], function(cmdlib) {
             }
 
             var me = this;
-            if (!this.identifyContent(e.target, function() { me.nextInput(me); })) {
+
+            var result = this.identifyContent(
+                e.target,
+                function() {
+                    // me.nextInput(this.getDOMNode().querySelector('.cmd-input'));
+                    me.nextInput(this.refs.input);
+                }
+            );
+
+            if (!result) {
+                this.nextInput(this);
                 return;
             }
 
-            this.nextInput(this);
             e.preventDefault();
         },
         nextInput: function(from) {
             var nextEl;
             if (from.props.next) {
                 nextEl = from._owner.refs[from.props.next].getDOMNode();
-            } else if (from._owner.refs.output) {
+            } else if (from._owner.refs.output && from._owner.refs.output !== from) {
                 nextEl = from._owner.refs.output.getDOMNode();
             }
 
             if (!nextEl) {
+                this._owner.nextInput(this);
                 return;
             }
 
@@ -111,7 +121,9 @@ define('builder', ['cmdlib'], function(cmdlib) {
         handleKeyUp: function(e) {
             switch (e.keyCode) {
                 case 13: // Enter
-                    this.identifyContent(e.target);
+                    this.identifyContent(e.target, function() {
+                        this._owner.enter();
+                    });
                     break;
             }
 
