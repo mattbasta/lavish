@@ -14,7 +14,7 @@ void main() {
             server.listen((HttpRequest request) {
                 if (request.uri.path == '/ws') {
                     WebSocketTransformer.upgrade(request).then((WebSocket websocket) {
-                        var inst = new instance.Instance();
+                        var inst = new instance.Instance(websocket);
 
                         websocket.listen(
                             inst.handleMessage,
@@ -35,11 +35,8 @@ void main() {
                     }
 
                     String path = 'res' + request.uri.path;
-                    new File(path).readAsString().then((resp) {
-                        response.headers.add(HttpHeaders.CONTENT_TYPE, lookupMimeType(path));
-                        response.write(resp);
-                        response.close();
-                    }).catchError(() => response.close());
+                    response.headers.add(HttpHeaders.CONTENT_TYPE, lookupMimeType(path));
+                    new File(path).openRead().pipe(response);
                     return;
                 }
 

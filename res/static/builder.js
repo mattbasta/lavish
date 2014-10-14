@@ -21,9 +21,6 @@ define('builder', ['cmdlib'], function(cmdlib) {
         componentDidMount: function() {
             setWidth(this.getDOMNode().querySelector('input'));
         },
-        nextInput: function() {
-            this.props.parent.nextInput(this.props.key);
-        },
         enter: function() {
             this.props.parent.enter(this.props.key);
         },
@@ -53,85 +50,127 @@ define('builder', ['cmdlib'], function(cmdlib) {
             };
             this.setState(state, cb);
         },
-        handleKeypress: function(e) {
-            var target = e.target;
+        identifyContent: function(target, cb) {
             var me = this;
 
-            switch (e.keyCode) {
-                case 13: // Enter
-                    // Get all possible templates
-                    var templates = cmdlib.all();
-                    // Filter the templates by return type, if we require one
-                    if (this.props.returnType) {
-                        templates = templates.filter(cmdlib.byReturnType(this.props.returnType));
-                    }
-
-                    templates = templates.filter(function(tmpl) {
-                        return tmpl.name.substr(0, target.value.length) === target.value;
-                    });
-
-                    if (templates.length) {
-                        var tmpl = templates[0];
-                        if (target.value === tmpl.name) {
-                            this.setTemplate(tmpl, function() {
-                                var nextCmd = me.getDOMNode().querySelector('.cmd-wrapper');
-                                if (nextCmd) {
-                                    nextCmd.querySelector('.cmd-input').focus();
-                                } else {
-                                    me.props.parent.enter();
-                                }
-                            });
-                        } else {
-                            // TODO: trigger error
-                        }
-                    } else {
-                        // TODO: Test input validity as primitive
-                        this.setPrimitive(target.value);
-                        me.props.parent.enter();
-                    }
-
-                    break;
-
-                case 32:
-
-                    break;
-                default:
-                    //
+            // Get all possible templates
+            var templates = cmdlib.all();
+            // Filter the templates by return type, if we require one
+            if (this.props.returnType) {
+                templates = templates.filter(cmdlib.byReturnType(this.props.returnType));
+            }
+            if (this.props.inputType) {
+                templates = templates.filter(cmdlib.byInputType(this.props.inputType));
             }
 
-            setWidth(target);
+            templates = templates.filter(function(tmpl) {
+                return tmpl.name.substr(0, target.value.length) === target.value;
+            });
+
+            if (templates.length) {
+                var tmpl = templates[0];
+                if (target.value === tmpl.name) {
+                    this.setTemplate(tmpl, cb);
+                    return true;
+                } else {
+                    // TODO: trigger error
+                }
+            } else if (!this.isOutputTarget) {
+                // TODO: Test input validity as primitive
+                this.setPrimitive(target.value, cb);
+                return true;
+            }
+        },
+        handleKeyDown: function(e) {
+            if (e.keyCode !== 32 || e.target.selectionEnd !== e.target.value.length) {
+                return;
+            }
+
+            var me = this;
+            if (!this.identifyContent(e.target, function() { me.nextInput(me); })) {
+                return;
+            }
+
+            this.nextInput(this);
+            e.preventDefault();
+        },
+        nextInput: function(from) {
+            var nextEl;
+            if (from.props.next) {
+                nextEl = from._owner.refs[from.props.next].getDOMNode();
+            } else if (from._owner.refs.output) {
+                nextEl = from._owner.refs.output.getDOMNode();
+            }
+
+            if (!nextEl) {
+                return;
+            }
+
+            nextEl.querySelector('.cmd-input').focus();
+        },
+        handleKeyUp: function(e) {
+            switch (e.keyCode) {
+                case 13: // Enter
+                    this.identifyContent(e.target);
+                    break;
+            }
+
+            setWidth(e.target);
         },
         render: function() {
             var contents = [];
 
-            var name = this.state.name;
+            var me = this;
+            var argNodes = this.state.args.map(function(arg, i) {
+                return CommandNode({
+                    parent: this,
+                    key: i,
+                    returnType: arg.type,
+                    paramName: arg.toString(),
 
+                    prev: me.state.args[i - 1] ? 'arg' + (i - 1) : null,
+                    next: me.state.args[i + 1] ? 'arg' + (i + 1) : null,
+                    ref: 'arg' + i,
+                });
+            }, this);
+
+            var outputNode;
+            if (this.state.type === 'template' && this.state.template.output) {
+                outputNode = React.DOM.div(
+                    {className: 'cmd-target'},
+                    CommandNode({
+                        parent: this,
+                        returnType: this.props.returnType,
+                        inputType: this.state.template.output,
+
+                        isOutputTarget: true,
+
+                        ref: 'output',
+                    })
+                );
+            }
 
             return React.DOM.div(
-                {
-                    className: 'cmd-wrapper cmd-' +
-                        (this.state.type || 'cmd-unset') +
-                        (this.state.args.length ? ' cmd-has-args' : ' cmd-no-args'),
-                },
-                React.DOM.input({
-                    className: 'cmd-input',
-                    ref: 'input',
-                    onKeyUp: this.handleKeypress,
-                    placeholder: this.props.paramName || '',
-                }),
-                this.state.args.map(function(arg, i) {
-                    return CommandNode({
-                        parent: this,
-                        key: i,
-                        returnType: arg.type,
-                        paramName: arg.toString(),
-                    });
-                }, this)
+                {className: 'cmd-sub-wrapper'},
+                React.DOM.div(
+                    {
+                        className: 'cmd-wrapper cmd-' +
+                            (this.state.type || 'unset') +
+                            (this.state.args.length ? ' cmd-has-args' : ' cmd-no-args')
+                    },
+                    React.DOM.input({
+                        className: 'cmd-input',
+                        ref: 'input',
+                        onKeyDown: this.handleKeyDown,
+                        onKeyUp: this.handleKeyUp,
+                        placeholder: this.props.paramName || '',
+                        next: argNodes.length ? 'arg0' : null,
+                    }),
+                    argNodes
+                ),
+                outputNode
             );
         },
-        getValue: function() {
-            //
-        }
     });
 
     var Builder = React.createClass({

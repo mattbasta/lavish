@@ -8,46 +8,53 @@
 }
 
 
+.cmd-sub-wrapper,
 .cmd-wrapper {
-  display: flex;
+    align-items: center;
+    display: inline-flex;
 }
 
-.cmd-wrapper.cmd-template {
-  background: #fff;
-  border: 1px solid #999;
-  border-radius: 3px;
-  margin: 2px 0
+.cmd-template {
+    background: #fff;
+    border: 1px solid #999;
+    border-radius: 3px;
+    margin: 2px 0
 }
 
-.cmd-no-args {
-  display: inline-block;
-}
 
 .cmd-template > .cmd-input {
-  background: #ffe;
-  border-radius: 3px 0 0 3px;
-  border-right: 1px solid #999;
-  font-family: Consolas, Courier;
-  font-weight: bold;
-  line-height: 1.5em;
-  margin-right: 2px;
-  padding-left: 1ex;
+    background: #ffe;
+    border-radius: 3px 0 0 3px;
+    border-right: 1px solid #999;
+    font-family: Consolas, Courier;
+    font-weight: bold;
+    line-height: 1.5em;
+    margin-right: 2px;
+    padding-left: 1ex;
 }
 .cmd-template.cmd-no-args > .cmd-input {
-  border-radius: 3px;
-  border-right: 0;
+    border-radius: 3px;
+    border-right: 0;
 }
 
 .cmd-wrapper .cmd-wrapper {
-  margin-right: 1ex;
+    margin-right: 1ex;
 }
 
 .cmd-input {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  border: 0;
-  background: transparent;
-  font-size: 14px;
-  min-width: 5ex;
-  width: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 0;
+    background: transparent;
+    font-size: 14px;
+    min-width: 5ex;
+    vertical-align: middle;
+    width: 0;
+}
+
+.cmd-target {
+}
+.cmd-target:before {
+    content: "→";
+    vertical-align: middle;
 }

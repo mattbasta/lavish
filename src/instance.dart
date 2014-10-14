@@ -6,21 +6,22 @@ import 'dart:io';
 import 'shvm/controller.dart';
 
 
-class Instance {
+class Instance implements InstanceCoordinator {
 
     Map<String, Controller> controllerMap;
     Directory cwd;
 
-    Instance() {
+    WebSocket socket;
+
+    Instance(WebSocket socket) {
         this.controllerMap = new Map<String, Controller>();
-        cwd = Directory.current;
+        this.cwd = Directory.current;
+        this.socket = socket;
     }
 
     void handleMessage(message) {
         var input = JSON.decode(message);
-
-
-
+        controllerMap[uuid] = getController(input);
     }
 
     void close() {

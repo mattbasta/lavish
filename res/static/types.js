@@ -16,6 +16,8 @@ define('types', function() {
         'Blob': new Type('Blob'),
         'Date': new Type('Date'),
         'DiskEntry': new Type('DiskEntry'),
+
+        'string[]': new Type('Array', ['string']),
         'DiskEntry[]': new Type('Array', ['DiskEntry']),
     };
 });
