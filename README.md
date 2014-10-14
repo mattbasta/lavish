@@ -2,8 +2,39 @@
 
 A web-based terminal emulator to replace your grandfather's *NIX shell. Command line interfaces haven't changed much in the last thirty years. This project is designed as a continuation of the [TermKit](https://github.com/unconed/TermKit) application, with a few notable differences:
 
-1. **The front-end lives in the browser.** This makes the application much more portable, as dependencies on Webkit are removed.
+1. **The front-end lives in the browser.** This makes the application much more portable, as dependencies on WebKit are removed.
 2. **The back-end is powered by Dart.** Dart is a very powerful language that offers flexibility equal to or great than that of JavaScript while providing support for features like reflection, type enforcement, and functional data processing.
+
+Traditionally, shells have been a combination of technologies and lacked separation of responsibility. Each shell accepts commands and produces output, but the output is almost always a mixed blob and the input is almost always an opaque (i.e., difficult to parse or manipulate) query.
+
+Lavish serves as the "CouchDB of shells". The back-end accepts structured queries in a computer-friendly format along a common protocol and produces typed, streaming responses. The front-end allows for human-friendly query generation and makes it easy to manage multiple concurrent operations. 
+
+
+## Goals
+
+- To make it fast and easy to perform complex shell commands
+- To structure commands in a way that makes them easy to modify
+- To allow users to execute multiple simultaneous commands without needing tabs
+- To provide means of visualizing and interpreting output for all commands
+    + Syntax highlighting
+    + `less` support by default
+    + Separation of stdout and stderr
+- To assign types to common commands to reduce debugging time
+
+Lavish is not designed as a complete shell replacement for all users, nor will it likely ever be. Instead, Lavish seeks to serve the 75th percentile user. Rough edges in Lavish can be worked around using the `sh` command, which simply defers its input to the default system shell.
+
+
+## Running
+
+First, make sure you have `dart` installed. You can install it with [Homebrew](http://brew.sh) by running `brew install dart`.
+
+To start the local server:
+
+```bash
+dart host.dart
+```
+
+You should be able to access the shell interface on localhost at port 4640.
 
 
 ## Syntax
