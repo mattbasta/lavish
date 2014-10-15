@@ -19,7 +19,7 @@ Controller getController(instruction, InstanceCoordinator inst) {
     var uuid = new Uuid().v4();
 
     var ctrl = new Controller(uuid, inst);
-    ctrl.run(input);
+    ctrl.run(instruction);
     return ctrl;
 }
 
@@ -32,8 +32,6 @@ class Controller {
     Controller(uuid, coord);
 
     void run(instruction) {
-        // Type checking
-        //
     }
 
     void push(String blob) {

@@ -91,7 +91,6 @@ define('builder', ['cmdlib'], function(cmdlib) {
             var result = this.identifyContent(
                 e.target,
                 function() {
-                    // me.nextInput(this.getDOMNode().querySelector('.cmd-input'));
                     me.nextInput(this.refs.input);
                 }
             );
@@ -119,14 +118,11 @@ define('builder', ['cmdlib'], function(cmdlib) {
             nextEl.querySelector('.cmd-input').focus();
         },
         handleKeyUp: function(e) {
-            switch (e.keyCode) {
-                case 13: // Enter
-                    this.identifyContent(e.target, function() {
-                        this._owner.enter();
-                    });
-                    break;
+            if (e.keyCode === 13) { // Enter
+                this.identifyContent(e.target, function() {
+                    this._owner.enter();
+                });
             }
-
             setWidth(e.target);
         },
         render: function() {
@@ -138,7 +134,7 @@ define('builder', ['cmdlib'], function(cmdlib) {
                     parent: this,
                     key: i,
                     returnType: arg.type,
-                    paramName: arg.toString(),
+                    placeholder: arg.toString(),
 
                     prev: me.state.args[i - 1] ? 'arg' + (i - 1) : null,
                     next: me.state.args[i + 1] ? 'arg' + (i + 1) : null,
@@ -154,6 +150,7 @@ define('builder', ['cmdlib'], function(cmdlib) {
                         parent: this,
                         returnType: this.props.returnType,
                         inputType: this.state.template.output,
+                        placeholder: this.state.template.output.toString(),
 
                         isOutputTarget: true,
 
@@ -175,13 +172,29 @@ define('builder', ['cmdlib'], function(cmdlib) {
                         ref: 'input',
                         onKeyDown: this.handleKeyDown,
                         onKeyUp: this.handleKeyUp,
-                        placeholder: this.props.paramName || '',
+                        placeholder: this.props.placeholder || '',
                         next: argNodes.length ? 'arg0' : null,
                     }),
                     argNodes
                 ),
                 outputNode
             );
+        },
+        getValue: function() {
+            if (this.state.type === 'primitive') {
+                return this.state.value;
+            } else if (this.state.type === null) {
+                return null;
+            }
+
+            var refs = this.refs;
+            return {
+                name: this.state.template.name,
+                args: this.state.args.map(function(arg, i) {
+                    return refs['arg' + i].getValue();
+                }),
+                output: refs.output ? refs.output.getValue() : null,
+            };
         },
     });
 
@@ -190,12 +203,15 @@ define('builder', ['cmdlib'], function(cmdlib) {
         nextInput: function() {},
         enter: function() {
             console.log('enter');
+            debugger;
+            console.log(this.refs.base.getValue());
         },
         render: function() {
             return React.DOM.div(
                 null,
                 CommandNode({
                     parent: this,
+                    ref: 'base',
                 })
             );
         }

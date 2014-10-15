@@ -21,7 +21,8 @@ class Instance implements InstanceCoordinator {
 
     void handleMessage(message) {
         var input = JSON.decode(message);
-        controllerMap[uuid] = getController(input);
+        Controller ctrl = getController(JSON.decode(message), this);
+        controllerMap[ctrl.uuid] = ctrl;
     }
 
     void close() {
@@ -29,6 +30,13 @@ class Instance implements InstanceCoordinator {
             ctrl.kill();
         }
         controllerMap = null;
+    }
+
+    void pushUpdate(String uuid, String blob) {
+        socket.add(blob);
+    }
+    void closeController(String uuid) {
+        controllerMap.remove(uuid);
     }
 
 }
