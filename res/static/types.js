@@ -10,6 +10,8 @@ define('types', function() {
     };
 
     return {
+        'void': new Type('void'),
+
         'string': new Type('string'),
         'num': new Type('num'),
 

@@ -21,8 +21,18 @@ class Instance implements InstanceCoordinator {
 
     void handleMessage(message) {
         var input = JSON.decode(message);
-        Controller ctrl = getController(JSON.decode(message), this);
-        controllerMap[ctrl.uuid] = ctrl;
+
+        switch (input['type']) {
+            case 'command':
+                Controller ctrl = getController(input['value'], this);
+                controllerMap[ctrl.uuid] = ctrl;
+                socket.add(JSON.encode({
+                    type: 'chan.open',
+                    value: ctrl.uuid,
+                }));
+                break;
+        }
+
     }
 
     void close() {
@@ -33,10 +43,18 @@ class Instance implements InstanceCoordinator {
     }
 
     void pushUpdate(String uuid, String blob) {
-        socket.add(blob);
+        socket.add(JSON.encode({
+            type: 'chan.pub',
+            channel: uuid,
+            value: blob,
+        }));
     }
     void closeController(String uuid) {
         controllerMap.remove(uuid);
+        socket.add(JSON.encode({
+            type: 'chan.close',
+            value: uuid,
+        }));
     }
 
 }

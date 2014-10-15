@@ -3,9 +3,9 @@ define('cmdlib', ['types'], function(types) {
     function CommandInterface(name, input, args, output) {
         this.name = name;
 
-        this.input = input || null;
+        this.input = input || types['void'];
         this.args = args || [];
-        this.output = output || null;
+        this.output = output || types['void'];
     }
 
     function CommandParameter(name, type) {

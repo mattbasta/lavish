@@ -6,8 +6,6 @@ import 'dart:isolate';
 
 import 'package:uuid/uuid.dart';
 
-part 'task.dart';
-
 
 abstract class InstanceCoordinator {
     void pushUpdate(String uuid, String blob);
@@ -32,6 +30,9 @@ class Controller {
     Controller(uuid, coord);
 
     void run(instruction) {
+        print(instruction);
+        // ReceivePort port = new ReceivePort();
+        // Isolate.spawnUri(Uri.parse('commands/' + instruction.name + '.dart'), [], port.sendPort);
     }
 
     void push(String blob) {

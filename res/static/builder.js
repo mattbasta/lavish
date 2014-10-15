@@ -1,4 +1,4 @@
-define('builder', ['cmdlib'], function(cmdlib) {
+define('builder', ['cmdlib', 'comm', 'types'], function(cmdlib, comm, types) {
 
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext('2d');
@@ -143,7 +143,9 @@ define('builder', ['cmdlib'], function(cmdlib) {
             }, this);
 
             var outputNode;
-            if (this.state.type === 'template' && this.state.template.output) {
+            if (this.state.type === 'template' &&
+                this.state.template.output &&
+                this.state.template.output !== types['void']) {
                 outputNode = React.DOM.div(
                     {className: 'cmd-target'},
                     CommandNode({
@@ -182,13 +184,17 @@ define('builder', ['cmdlib'], function(cmdlib) {
         },
         getValue: function() {
             if (this.state.type === 'primitive') {
-                return this.state.value;
+                return {
+                    type: 'primitive',
+                    value: this.state.value,
+                };
             } else if (this.state.type === null) {
                 return null;
             }
 
             var refs = this.refs;
             return {
+                type: 'command',
                 name: this.state.template.name,
                 args: this.state.args.map(function(arg, i) {
                     return refs['arg' + i].getValue();
@@ -202,9 +208,7 @@ define('builder', ['cmdlib'], function(cmdlib) {
         displayName: 'Builder',
         nextInput: function() {},
         enter: function() {
-            console.log('enter');
-            debugger;
-            console.log(this.refs.base.getValue());
+            comm.write('command', this.refs.base.getValue());
         },
         render: function() {
             return React.DOM.div(
@@ -212,6 +216,7 @@ define('builder', ['cmdlib'], function(cmdlib) {
                 CommandNode({
                     parent: this,
                     ref: 'base',
+                    inputType: types['void'],
                 })
             );
         }

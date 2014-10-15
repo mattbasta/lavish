@@ -1,0 +1,3 @@
+define('main', ['builder'], function() {
+    //
+});
