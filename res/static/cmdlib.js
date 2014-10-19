@@ -33,6 +33,7 @@ define('cmdlib', ['types'], function(types) {
         new CommandInterface('rm', null, [param('target', types.DiskEntry)]),
         new CommandInterface('rmdir', null, [param('target', types.DiskEntry)]),
         new CommandInterface('touch', null, [param('target', types.DiskEntry)]),
+        new CommandInterface('uuid', null, null, types.string),
 
         // Sources
         new CommandInterface('curl', null, [param('uri', types.string)], types.Blob),

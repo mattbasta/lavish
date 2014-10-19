@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'shvm/controller.dart';
+import 'shvm/instancecoordinator.dart';
 
 
 class Instance implements InstanceCoordinator {
@@ -24,6 +25,9 @@ class Instance implements InstanceCoordinator {
 
         switch (input['type']) {
             case 'command':
+
+                if (this.handleCommand(input)) return;
+
                 Controller ctrl = getController(input['value'], this);
                 controllerMap[ctrl.uuid] = ctrl;
                 socket.add(JSON.encode({
@@ -33,6 +37,14 @@ class Instance implements InstanceCoordinator {
                 break;
         }
 
+    }
+
+    bool handleCommand(Map command) {
+        switch (command['value']['name']) {
+            case 'clear':
+                this.socket.write('clear');
+                return true;
+        }
     }
 
     void close() {

@@ -1,8 +1,14 @@
-import 'dart:isolate';
+library shvm.read;
 
-import '../types/types.dart';
+import 'dart:async';
+
+import '../types.dart' as types;
+
+import '../annotations.dart';
+import '../context.dart';
 
 
-void main(List<String> args, SendPort port) {
-    //
+@voidInput()
+Future<types.Blob> run(Context context, types.DiskEntry target) {
+    return new Future<types.Blob>.value(new types.Blob.fromDiskEntry(target));
 }

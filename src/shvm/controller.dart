@@ -6,11 +6,7 @@ import 'dart:isolate';
 
 import 'package:uuid/uuid.dart';
 
-
-abstract class InstanceCoordinator {
-    void pushUpdate(String uuid, String blob);
-    void closeController(String uuid);
-}
+import 'instancecoordinator.dart';
 
 
 Controller getController(instruction, InstanceCoordinator inst) {

@@ -25,15 +25,15 @@ define('comm', ['channel', 'events'], function(channel, events) {
         },
         write: function(type, value) {
             socket.send(JSON.stringify({
-                type: type,
-                value: value,
+                Type: type,
+                Value: JSON.stringify(value),
             }));
         },
         writeChannel: function(channel, type, value) {
             socket.send(JSON.stringify({
-                channel: channel,
-                type: type,
-                value: value,
+                Channel: channel,
+                Type: type,
+                Value: JSON.stringify(value),
             }));
         },
         on: channelBus.on,
