@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"code.google.com/p/go.net/websocket"
+
+	"lavish/src"
 )
 
 type Instance struct {
@@ -25,14 +27,14 @@ func NewInstance(conn *websocket.Conn) {
 				x.closing <- true
 				return
 			default:
-				var msg IncomingMessage
+				var msg src.IncomingMessage
 				err := websocket.JSON.Receive(conn, &msg)
 				if err != nil {
 					log.Println(err)
 					x.closing <- true
 					return
 				}
-				self.handleIncoming(msg)
+				x.handleIncoming(msg)
 			}
 		}
 	}()
