@@ -3,7 +3,7 @@
 A web-based terminal emulator to replace your grandfather's *NIX shell. Command line interfaces haven't changed much in the last thirty years. This project is designed as a continuation of the [TermKit](https://github.com/unconed/TermKit) application, with a few notable differences:
 
 1. **The front-end lives in the browser.** This makes the application much more portable, as dependencies on WebKit are removed.
-2. **The back-end is powered by Dart.** Dart is a very powerful language that offers flexibility equal to or great than that of JavaScript while providing support for features like reflection, type enforcement, and functional data processing.
+2. **The back-end is powered by Go.** Go is statically typed but offers flexible enough interfaces for the purposes of a shell. Go is wickedly fast.
 
 Traditionally, shells have been a combination of technologies and lacked separation of responsibility. Each shell accepts commands and produces output, but the output is almost always a mixed blob and the input is almost always an opaque (i.e., difficult to parse or manipulate) query.
 
@@ -26,15 +26,15 @@ Lavish is not designed as a complete shell replacement for all users, nor will i
 
 ## Running
 
-First, make sure you have `dart` installed. You can install it with [Homebrew](http://brew.sh) by running `brew install dart`.
+Link the directory that you cloned Lavish into to the path `/opt/lavish`. Run `make` to compile.
 
 To start the local server:
 
 ```bash
-dart host.dart
+./lavish
 ```
 
-You should be able to access the shell interface on localhost at port 4640.
+You should be able to access the shell interface on localhost at port 4640 by default, though you should be able to customize this with the `--port` argument.
 
 
 ## Syntax
