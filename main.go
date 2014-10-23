@@ -31,12 +31,12 @@ func getWSHandler() websocket.Handler {
 		addr := ws.Request().RemoteAddr
 		log.Println("Client connected: " + addr)
 
-		NewInstance(ws)
+		NewInstance(ws).Listen()
 	})
 }
 
 func main() {
-	flag.IntVar(&HTTP_PORT, "port", 8080, "The port to run the web server on")
+	flag.IntVar(&HTTP_PORT, "port", 4640, "The port to run the web server on")
 	log.Println("Starting server...")
 
 	http.HandleFunc("/", httphandler)

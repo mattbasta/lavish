@@ -2,6 +2,8 @@ package src
 
 import (
 	"code.google.com/p/go-uuid/uuid"
+
+	"lavish/src/protocol"
 )
 
 type instanceCoordinator interface {
@@ -11,16 +13,16 @@ type instanceCoordinator interface {
 
 type Controller struct {
 	Uuid        string
-	coordinator *instanceCoordinator
+	coordinator instanceCoordinator
 }
 
-func NewController(inst *instanceCoordinator) *Controller {
+func NewController(inst instanceCoordinator) *Controller {
 	c := new(Controller)
 	c.Uuid = uuid.New()
 	c.coordinator = inst
 	return c
 }
 
-func (self *Controller) RunCommand(cmd Command) {
+func (self *Controller) RunCommand(cmd protocol.Command) {
 	//
 }

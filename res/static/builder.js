@@ -185,8 +185,8 @@ define('builder', ['cmdlib', 'comm', 'types'], function(cmdlib, comm, types) {
         getValue: function() {
             if (this.state.type === 'primitive') {
                 return {
-                    type: 'primitive',
-                    value: this.state.value,
+                    Type: 'primitive',
+                    Value: this.state.value,
                 };
             } else if (this.state.type === null) {
                 return null;
@@ -194,12 +194,12 @@ define('builder', ['cmdlib', 'comm', 'types'], function(cmdlib, comm, types) {
 
             var refs = this.refs;
             return {
-                type: 'command',
-                name: this.state.template.name,
-                args: this.state.args.map(function(arg, i) {
+                Type: 'command',
+                Name: this.state.template.name,
+                Args: this.state.args.map(function(arg, i) {
                     return refs['arg' + i].getValue();
                 }),
-                output: refs.output ? refs.output.getValue() : null,
+                Output: refs.output ? refs.output.getValue() : null,
             };
         },
     });
