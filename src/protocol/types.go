@@ -1,6 +1,6 @@
 package protocol
 
-type IncomingMessage struct {
+type BroadcastMessage struct {
 	Channel string
 	Type    string
 	Value   string

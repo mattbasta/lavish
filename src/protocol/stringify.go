@@ -25,8 +25,6 @@ func (self Command) Stringify() string {
 
 func (self Primitive) Stringify() string {
 	switch self.Value.(type) {
-	case int:
-		return fmt.Sprintf("%dd", self.Value.(int))
 	case float64:
 		return fmt.Sprintf("%ff", self.Value.(float64))
 	case string:

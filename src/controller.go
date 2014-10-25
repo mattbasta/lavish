@@ -2,8 +2,6 @@ package src
 
 import (
 	"code.google.com/p/go-uuid/uuid"
-
-	"lavish/src/protocol"
 )
 
 type instanceCoordinator interface {
@@ -23,6 +21,6 @@ func NewController(inst instanceCoordinator) *Controller {
 	return c
 }
 
-func (self *Controller) RunCommand(cmd protocol.Command) {
-	//
+func (self *Controller) RunCommand(cmd protocol.Command) chan interface{} {
+	return ChainCommands(self, cmd)
 }
