@@ -81,6 +81,9 @@ define('builder', ['cmdlib', 'comm', 'types'], function(cmdlib, comm, types) {
                 return true;
             }
         },
+        handleBlur: function(e) {
+            this.identifyContent(e.target);
+        },
         handleKeyDown: function(e) {
             if (e.keyCode !== 32 || e.target.selectionEnd !== e.target.value.length) {
                 return;
@@ -172,6 +175,7 @@ define('builder', ['cmdlib', 'comm', 'types'], function(cmdlib, comm, types) {
                     React.DOM.input({
                         className: 'cmd-input',
                         ref: 'input',
+                        onBlur: this.handleBlur,
                         onKeyDown: this.handleKeyDown,
                         onKeyUp: this.handleKeyUp,
                         placeholder: this.props.placeholder || '',
