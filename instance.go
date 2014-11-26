@@ -51,7 +51,11 @@ func (self *Instance) handleIncoming(msg protocol.BroadcastMessage) {
 		log.Println(cmd.Stringify())
 		ctrl := src.NewController(self)
 		self.activeControllers[ctrl.Uuid] = ctrl
-		ctrl.RunCommand(cmd)
+		websocket.JSON.Send(
+			self.connection,
+			protocol.BroadcastMessage{ctrl.Uuid, "chan.open", ""},
+		)
+		ctrl.RunCommand(*cmd)
 		break
 	}
 }
@@ -59,10 +63,10 @@ func (self *Instance) handleIncoming(msg protocol.BroadcastMessage) {
 func (self *Instance) PushUpdate(uuid string, cmdType string, value string) {
 	websocket.JSON.Send(
 		self.connection,
-		BroadcastMessage{uuid, cmdType, value},
+		protocol.BroadcastMessage{uuid, cmdType, value},
 	)
 }
 
 func (self *Instance) CloseController(uuid string) {
-	delete(self.activeControllers[uuid])
+	delete(self.activeControllers, uuid)
 }

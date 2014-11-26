@@ -10,9 +10,17 @@ define('comm', ['channel', 'events'], function(channel, events) {
     socket.addEventListener('message', function(e) {
         var data = JSON.parse(e.data);
 
-        switch (data.type) {
+        if (data.Channel) {
+            channelBus.fire(data.Channel, data.Value)
+            if (data.Channel in channels) {
+                channels[data.Channel].write(data.value);
+            }
+            return;
+        }
+
+        switch (data.Type) {
             case 'chan.open':
-                var chan = channels[data.value] = new channel.Channel(data.value);
+                var chan = channels[data.value] = new channel.Channel(data.Channel);
                 channelBus.fire('chan.open', chan);
                 break;
         }

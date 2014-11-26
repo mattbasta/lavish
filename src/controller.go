@@ -2,6 +2,8 @@ package src
 
 import (
 	"code.google.com/p/go-uuid/uuid"
+
+	"lavish/src/protocol"
 )
 
 type instanceCoordinator interface {
